@@ -30,9 +30,11 @@ public:
 
 protected:
   mfem::Coefficient & _coef;
-  mfem::Coefficient * _dcoef;
   mfem::ScalarVectorProductCoefficient * _product_coeff;
   mfem::ScalarVectorProductCoefficient * _dproduct_coeff;
+  mfem::ProductCoefficient * _product_u2_coeff;
+  mfem::ProductCoefficient * _product_2u_coeff;
+  mfem::SumCoefficient * _sum_coeff;
   mfem::SumIntegrator * _sum;
 };
 

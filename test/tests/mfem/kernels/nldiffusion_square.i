@@ -1,7 +1,7 @@
 [Mesh]
   type = MFEMMesh
-  file = ../mesh/mug.e
-  dim = 3
+  file = ../mesh/square.e
+  uniform_refine = 4
 []
 
 [Problem]
@@ -14,11 +14,6 @@
     fec_type = H1
     fec_order = FIRST
   []
-  [HCurlFESpace]
-    type = MFEMVectorFESpace
-    fec_type = ND
-    fec_order = FIRST
-  []
 []
 
 [Variables]
@@ -28,21 +23,6 @@
   []
 []
 
-[AuxVariables]
-  [concentration_gradient]
-    type = MFEMVariable
-    fespace = HCurlFESpace
-  []
-[]
-
-[AuxKernels]
-  [grad]
-    type = MFEMGradAux
-    variable = concentration_gradient
-    source = concentration
-    execute_on = TIMESTEP_END
-  []
-[]
 
 [ICs]
   [diffused_ic]
@@ -59,7 +39,7 @@
   []
   [different]
     type = ParsedFunction
-    expression = z
+    expression = 1.0
   []
 []
 
@@ -68,33 +48,19 @@
     type = MFEMScalarDirichletBC
     variable = concentration
     boundary = 'bottom'
-    coefficient = -2.375
+    coefficient = 1
   []
   [top]
     type = MFEMScalarDirichletBC
     variable = concentration
     boundary = 'top'
-    coefficient = 2.625
+    coefficient = 1
   []
 []
 
-[FunctorMaterials]
-  [Substance]
-    type = MFEMGenericFunctorMaterial
-    prop_names = diffusivity
-    prop_values = 1.0
-    block = 'the_domain'
-  []
-[]
 
 [Kernels]
-  active = 'residual_diff'
-  [jacobian_diff]
-    type = MFEMDiffusionKernel
-    variable = concentration
-    coefficient = diffusivity
-  []
-  [residual_diff]
+  [nl_diffusion]
     type = MFEMDomainLFGardKernel
     variable = concentration
     coefficient = concentration
@@ -128,14 +94,5 @@
     type = MFEMParaViewDataCollection
     file_base = OutputData/NLDiffusion
     vtk_format = ASCII
-  []
-  [VisItDataCollection]
-    type = MFEMVisItDataCollection
-    file_base = OutputData/VisItDataCollection
-  []
-  [ConduitDataCollection]
-    type = MFEMConduitDataCollection
-    file_base = OutputData/ConduitDataCollection/Run
-    protocol = conduit_bin
   []
 []
