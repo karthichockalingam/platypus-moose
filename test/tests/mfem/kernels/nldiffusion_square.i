@@ -44,16 +44,10 @@
 []
 
 [BCs]
-  [bottom]
+  [left]
     type = MFEMScalarDirichletBC
     variable = concentration
-    boundary = 'bottom'
-    coefficient = 1
-  []
-  [top]
-    type = MFEMScalarDirichletBC
-    variable = concentration
-    boundary = 'top'
+    boundary = 'left'
     coefficient = 1
   []
 []

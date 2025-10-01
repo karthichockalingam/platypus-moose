@@ -32,6 +32,7 @@ protected:
   mfem::Coefficient & _coef;
   mfem::ScalarVectorProductCoefficient * _product_coeff;
   mfem::ScalarVectorProductCoefficient * _dproduct_coeff;
+  mfem::ScalarVectorProductCoefficient * _minus_dproduct_coeff;
   mfem::ProductCoefficient * _product_u2_coeff;
   mfem::ProductCoefficient * _product_2u_coeff;
   mfem::SumCoefficient * _sum_coeff;

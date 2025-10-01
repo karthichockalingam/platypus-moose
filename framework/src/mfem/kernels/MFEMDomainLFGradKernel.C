@@ -54,7 +54,8 @@ MFEMDomainLFGardKernel::createBFIntegrator()
   _dproduct_coeff = new mfem::ScalarVectorProductCoefficient(*_product_2u_coeff, vec_coef);
   _sum = new mfem::SumIntegrator;
   _sum->AddIntegrator(new mfem::DiffusionIntegrator(*_sum_coeff));
-  _sum->AddIntegrator(new mfem::MixedDirectionalDerivativeIntegrator(*_dproduct_coeff));
+  _minus_dproduct_coeff = new mfem::ScalarVectorProductCoefficient(-1.0, *_dproduct_coeff);
+  _sum->AddIntegrator(new mfem::MixedScalarWeakDivergenceIntegrator(*_minus_dproduct_coeff));
   return _sum;
 }
 
