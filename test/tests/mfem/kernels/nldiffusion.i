@@ -1,7 +1,7 @@
 [Mesh]
   type = MFEMMesh
-  file = ../mesh/mug.e
-  dim = 3
+  file = square.e
+  dim = 2
 []
 
 [Problem]
@@ -69,7 +69,7 @@
     type = MFEMScalarDirichletBC
     variable = concentration
     boundary = 'bottom'
-    coefficient = 0.0
+    coefficient = 1.0
   []
   [top]
     type = MFEMScalarDirichletBC
@@ -80,6 +80,7 @@
 []
 
 [FunctorMaterials]
+active = ' '
   [Substance]
     type = MFEMGenericFunctorMaterial
     prop_names = diffusivity
@@ -89,11 +90,11 @@
 []
 
 [Kernels]
-  active = 'jacobian_diff residual_diff force'
+  active = 'jacobian_diff residual_diff'
   [jacobian_diff]
     type = MFEMDiffusionKernel
     variable = concentration
-    coefficient = diffusivity
+    coefficient = one
   []
   [residual_diff]
     type = MFEMDomainLFGardKernel
@@ -110,6 +111,7 @@
 [Preconditioner]
   [boomeramg]
     type = MFEMHypreBoomerAMG
+    print_level = 0
   []
   [jacobi]
     type = MFEMOperatorJacobiSmoother

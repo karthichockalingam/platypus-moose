@@ -343,14 +343,38 @@ EquationSystem::ApplyEssVals(const mfem::Vector &w, const mfem::Array<int> & con
 void
 EquationSystem::Mult(const mfem::Vector & sol, mfem::Vector & residual) const
 {
+  /*
+  static bool b = true;
+
+  if (b){
+  mfem::Vector & temp = const_cast<mfem::Vector &>(sol); 
+  for (size_t i = 0; i < sol.Size(); i++)
+  {
+    temp(i) = sol(i) == 0 ? 2: sol(i);
+  }
+  
+  b = false;
+  }*/
+
   const_cast<EquationSystem*>(this)->CopyVec(sol,_trueBlockSol);
+
+   std::cout << "******************** Sol ***********************" << std::endl;
+   sol.Print(std::cout);
   
   for (int i = 0; i < _trial_var_names.size(); i++)
   {
     auto & trial_var_name = _trial_var_names.at(i);
-    ApplyEssVals(*(_var_ess_constraints.at(i)), _ess_tdof_lists.at(i), _trueBlockSol.GetBlock(i));
+   // _trueBlockSol = .5;
+   //  ApplyEssVals(*(_var_ess_constraints.at(i)), _ess_tdof_lists.at(i), _trueBlockSol.GetBlock(i));
     _gfuncs->Get(trial_var_name)->Distribute(&(_trueBlockSol.GetBlock(i)));
+
+ // std::cout << "********************  _gfuncs ***********************" << std::endl;
+ //  _gfuncs->Get(trial_var_name)->Print(std::cout);
   }
+
+
+//  std::cout << "******************** Before Solution ***********************" << std::endl;
+ // _trueBlockSol.GetBlock(0).Print_HYPRE(std::cout);
 
   UpdateJacobian();
 
@@ -359,7 +383,6 @@ EquationSystem::Mult(const mfem::Vector & sol, mfem::Vector & residual) const
   for (int i = 0; i < _test_var_names.size(); i++)
   {
     auto & test_var_name = _test_var_names.at(i);
-    auto & trial_var_name = _test_var_names.at(i);
 
     int offset = _BlockResidual.GetBlock(i).Size();
     mfem::Vector aux(offset);
@@ -373,9 +396,22 @@ EquationSystem::Mult(const mfem::Vector & sol, mfem::Vector & residual) const
     nlf->ParallelAssemble(_BlockResidual.GetBlock(i));
 
     _BlockResidual.GetBlock(i) -= aux;
+    _BlockResidual.GetBlock(i) *= -1;
+
+   // std::cout << "******************** aux ***********************" << std::endl;
+   // aux.Print(std::cout);
+
+   // std::cout << "******************** Before Residual ***********************" << std::endl;
+   // _BlockResidual.GetBlock(i).Print_HYPRE(std::cout);
+
+   // std::cout << "******************** Before Essential tdofs: " <<  _ess_tdof_lists.at(i).Size()  << " ***********************" << std::endl;
+   //  _ess_tdof_lists.at(i).Print(std::cout);
 
     if(_non_linear)
       _BlockResidual.GetBlock(i).SetSubVector(_ess_tdof_lists.at(i),0.0);
+
+   // std::cout << "******************** After Residual ***********************" << std::endl;
+   // _BlockResidual.GetBlock(i).Print_HYPRE(std::cout);
   }
 
   if(!_non_linear){
@@ -386,9 +422,21 @@ EquationSystem::Mult(const mfem::Vector & sol, mfem::Vector & residual) const
     const_cast<EquationSystem*>(this)->FormLinearSystem(_jacobian,  _trueBlockSol, _BlockResidual);
   }
 
+//  std::cout << "******************** Essential tdofs ***********************" << std::endl;
+ // _ess_tdof_lists.at(0).Print();
+
+ // std::cout << "******************** Solution ***********************" << std::endl;
+ // _trueBlockSol.GetBlock(0).Print_HYPRE(std::cout);
+
+  mfem::HypreParMatrix * A = _jacobian.As<mfem::HypreParMatrix>();
+//  std::cout << "******************** Jacobian ***********************" << std::endl;
+ // _jacobian->PrintMatlab(std::cout);
+ // std::cout << std::flush;
+
+  residual *= -1.0;
+
   if(!_non_linear)
     {
-      residual *= -1.0;
       _jacobian->AddMult(_trueBlockSol, residual);
     }
 
@@ -427,6 +475,7 @@ EquationSystem::UpdateJacobian() const
       auto blf = _blfs.Get(test_var_name);
       blf->Update();
       blf->Assemble();
+     // blf->FormSystemMatrix(_ess_tdof_lists.at(i), _jacobian);
     }
 
     // Form off-diagonal blocks
