@@ -392,6 +392,8 @@ EquationSystem::UpdateJacobian() const
     auto blf = _blfs.Get(test_var_name);
     blf->Update();
     blf->Assemble();
+    std::cout << "Martix_blf" << std::endl;
+    blf->PrintMatlab(std::cout);
   }
 
   // Form off-diagonal blocks
@@ -420,6 +422,9 @@ CopyVec(const mfem::Vector & x, mfem::Vector & y)
 void
 EquationSystem::Mult(const mfem::Vector & sol, mfem::Vector & residual) const
 {
+  std::cout << "Print sol Vector" << std::endl;
+  sol.Print(std::cout);
+
   static_cast<mfem::Vector &>(_trueBlockSol) = sol;
   for (unsigned int i = 0; i < _trial_var_names.size(); i++)
   {
@@ -432,7 +437,7 @@ EquationSystem::Mult(const mfem::Vector & sol, mfem::Vector & residual) const
   {
     _blockResidual = 0.0;
     UpdateJacobian();
-
+  
     for (unsigned int i = 0; i < _test_var_names.size(); i++)
     {
       auto & test_var_name = _test_var_names.at(i);
@@ -443,6 +448,8 @@ EquationSystem::Mult(const mfem::Vector & sol, mfem::Vector & residual) const
       lf->Assemble();
       lf->ParallelAssemble(b);
       b.SyncAliasMemory(b);
+      //std::cout << "Print b Vector" << std::endl;
+     // b.Print(std::cout);
 
       auto nlf = _nlAs.GetShared(test_var_name);
       nlf->Assemble();
@@ -453,11 +460,17 @@ EquationSystem::Mult(const mfem::Vector & sol, mfem::Vector & residual) const
 
       _blockResidual.GetBlock(i).SetSubVector(_ess_tdof_lists.at(i), 0.0);
       _blockResidual.GetBlock(i).SyncAliasMemory(_blockResidual);
+       //_jacobian.Ptr()->
     }
 
     residual = static_cast<mfem::Vector &>(_blockResidual);
     const_cast<EquationSystem *>(this)->FormLinearSystem(_jacobian, _trueBlockSol, _blockResidual);
+    mfem::HypreParMatrix * A = _jacobian.As<mfem::HypreParMatrix>();
+    std::cout << "Martix _jacobian" << std::endl;
+    A->PrintMatlab(std::cout);
     residual *= -1.0;
+    std::cout << "Print residual Vector" << std::endl;
+    residual.Print(std::cout);
   }
   else
   {

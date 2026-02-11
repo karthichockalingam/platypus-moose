@@ -30,6 +30,20 @@ EquationSystemProblemOperator::Init(mfem::BlockVector & X)
 void
 EquationSystemProblemOperator::Solve()
 {
+  // for (const auto i : index_range(_test_var_names))
+  {
+  //   auto & test_var_name = _test_var_names.at(i);
+     //*(GetEquationSystem()->_var_ess_constraints.at(0)) = *(_problem_data.gridfunctions.GetShared("concentration"));
+     static_cast<mfem::Vector &>(_true_x) = *(_problem_data.gridfunctions.GetShared("concentration"));
+     //mfem::Vector val =  *(_problem_data.gridfunctions.GetShared("concentration"));
+     //std::cout << "Initial values: " << std::endl;
+     //val.Print(std::cout);
+     //mfem::Vector sol = *(GetEquationSystem()->_var_ess_constraints.at(0));
+     //std::cout << "Initial Sol values: " << std::endl;
+     //sol.Print(std::cout);
+  }
+
+  GetEquationSystem()->ApplyEssentialBCs();
 
   GetEquationSystem()->BuildJacobian(_true_x, _true_rhs);
   if (_problem_data.jacobian_solver->isLOR() && GetEquationSystem()->GetTestVarNames().size() > 1)
