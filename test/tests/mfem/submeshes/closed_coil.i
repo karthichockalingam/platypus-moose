@@ -5,7 +5,7 @@ coil_conductivity = 1.0
 
 [Mesh]
   type = MFEMMesh
-  file = ../mesh/team_coil_two_vols_plate_exterior_tet.msh
+  file = ../mesh/team_coil_two_vols_plate_exterior_tet_m.msh
 []
 
 [Problem]
