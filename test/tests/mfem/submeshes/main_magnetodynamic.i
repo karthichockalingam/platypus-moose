@@ -4,7 +4,7 @@
 omega=${fparse 2.0*3.14159265358979323846*50.0}  # angular frequency 2*PI
 sigma=0.3278e8 # Siemens per meter (S/m) of the conductivity plate
 nu=795774.715 #  (meters/Henry) = 1/magentic permiablity of free space
-echelon=8.85e-12 #Farads/m of free space
+epsilon=8.85e-12 #Farads/m of free space
 
 [Mesh]
   type = MFEMMesh
@@ -60,7 +60,7 @@ echelon=8.85e-12 #Farads/m of free space
   [tangential_a_bdr]
     type = MFEMComplexVectorTangentialDirichletBC
     variable = a_field
-    boundary = '1' #free space
+  #  boundary = 'Boundary' #free space
   []
 []
 
@@ -88,11 +88,11 @@ echelon=8.85e-12 #Farads/m of free space
     variable = a_field
     [ImagComponent]
       type = MFEMVectorFEMassKernel
-      coefficient = ${fparse (omega*sigma*echelon)}
+      coefficient = ${fparse (omega*sigma)}
     []
     [RealComponent]
       type = MFEMVectorFEMassKernel
-      coefficient = ${fparse -(omega*omega*echelon)}
+      coefficient = ${fparse -(omega*omega*epsilon)}
     []
     block = 'Plate'
   []
@@ -102,7 +102,7 @@ echelon=8.85e-12 #Farads/m of free space
     variable = a_field
     [RealComponent]
       type = MFEMVectorFEMassKernel
-      coefficient = ${fparse -(omega*omega*echelon)}
+      coefficient = ${fparse -(omega*omega*epsilon)}
     []
     block = 'Free_space'
   []
