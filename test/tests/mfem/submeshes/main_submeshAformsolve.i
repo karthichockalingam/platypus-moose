@@ -22,7 +22,7 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
   [coil_complement]
     type = MFEMDomainSubMesh
     block = 'Free_space Plate'
-    submesh_boundary = Coil_Surface
+    submesh_boundary = Coil_Surface_Boundary
   []
 []
 
@@ -68,6 +68,7 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
 []
 
 [AuxKernels]
+  active = ''
   [curl]
     type = MFEMComplexCurlAux
     variable = b_field
@@ -83,7 +84,12 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
         variable = a_field
         vector_coefficient_real = coil_complement_source_a_field_imag
         vector_coefficient_imag = coil_complement_source_a_field_real
-        boundary = 'Coil_Surface'
+        boundary = 'Coil_Surface_Boundary'
+    []
+    [tangential_a_bdr]
+        type = MFEMComplexVectorTangentialDirichletBC
+        variable = a_field
+        boundary = 'Boundary' #free space
     []
 []
 
@@ -137,7 +143,6 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
     [RealComponent]
       type = MFEMCurlCurlKernel
       coefficient = ${nu}
-      block = 'Free_space Plate'
     []
   []
 
@@ -146,12 +151,11 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
     variable = a_field
     [RealComponent]
       type = MFEMVectorFEMassKernel
-      coefficient = massCoef # = - (omega**2)*epsilon0
-      block = 'Free_space Plate'
+      coefficient = massCoef # = - (omega**2)*epsilon
     []
     [ImagComponent]
       type = MFEMVectorFEMassKernel
-      coefficient = lossCoef # = \omega * \sigma
+      coefficient = loss_coef_target
       block = 'Plate'
     []
   []
@@ -182,22 +186,16 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
   [from_sub]
     type = MultiAppMFEMShapeEvaluationTransfer
     source_variables = source_a_field
-    variables = source_a_field
+    variables = coil_complement_source_a_field
     from_multi_app = subapp
-  []
-  [submesh_transfer_to_coil_complement]
-    type = MFEMSubMeshComplexTransfer
-    from_variable = source_a_field
-    to_variable = coil_complement_source_a_field
-    execute_on = INITIAL
-    execution_order_group = 2
   []
 []
 
 [Outputs]
   [ParaViewDataCollection]
     type = MFEMParaViewDataCollection
-    file_base = OutputData/Magnetodynamic
+    file_base = OutputData/SubmeshAFormSolve
+    submeshes = coil_complement
     vtk_format = ASCII
   []
 []
