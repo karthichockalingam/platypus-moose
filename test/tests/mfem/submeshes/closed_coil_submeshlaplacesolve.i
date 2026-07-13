@@ -182,17 +182,17 @@ omega=${fparse 2.0*3.14159265358979323846*50.0}  # angular frequency 2*PI
   []
 []
 
-#[Outputs]
-#  [ParaViewDataCollection]
-#    type = MFEMParaViewDataCollection
-#    file_base = OutputData/ClosedCoilSourceSubMesh
-#    vtk_format = ASCII
-#    submesh = coil
-#  []
-#  [GlobalParaViewDataCollection]
-#    type = MFEMParaViewDataCollection
-#    file_base = OutputData/WholePotentialCoil
-#    vtk_format = ASCII
-#  []
-#[]
+[Outputs]
+  [ParaViewDataCollection]
+    type = MFEMParaViewDataCollection
+    file_base = OutputData/ClosedCoilSourceSubMesh
+    vtk_format = ASCII
+   submesh = coil
+  []
+  [GlobalParaViewDataCollection]
+    type = MFEMParaViewDataCollection
+    file_base = OutputData/WholePotentialCoil
+    vtk_format = ASCII
+  []
+[]
  

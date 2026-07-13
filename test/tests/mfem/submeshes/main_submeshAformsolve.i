@@ -22,7 +22,6 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
   [coil_complement]
     type = MFEMDomainSubMesh
     block = 'Free_space Plate'
-    submesh_boundary = Coil_Surface_Boundary
   []
 []
 
@@ -84,7 +83,7 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
         variable = a_field
         vector_coefficient_real = coil_complement_source_a_field_imag
         vector_coefficient_imag = coil_complement_source_a_field_real
-        boundary = 'Coil_Surface_Boundary'
+        boundary = 7
     []
     [tangential_a_bdr]
         type = MFEMComplexVectorTangentialDirichletBC
@@ -164,9 +163,6 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
 
 [Solver]
   type = MFEMSuperLU
-  l_tol = 1e-12
-  print_level = 1
-  l_max_its = 100
 []
 
 [Executioner]
@@ -183,20 +179,32 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
 []
 
 [Transfers]
+  active = 'from_sub from_sub_source_a_field'
   [from_sub]
     type = MultiAppMFEMShapeEvaluationTransfer
     source_variables = source_a_field
     variables = coil_complement_source_a_field
     from_multi_app = subapp
   []
+  [from_sub_source_a_field]
+    type = MultiAppMFEMShapeEvaluationTransfer
+    source_variables = source_a_field
+    variables = source_a_field
+    from_multi_app = subapp
+  []
 []
 
 [Outputs]
-  [ParaViewDataCollection]
+  [GlobalParaViewDataCollection]
+    type = MFEMParaViewDataCollection
+    file_base = OutputData/AFormSolve
+    vtk_format = ASCII
+  []
+  [SubmeshParaViewDataCollection]
     type = MFEMParaViewDataCollection
     file_base = OutputData/SubmeshAFormSolve
-    submeshes = coil_complement
     vtk_format = ASCII
+    submesh = coil_complement
   []
 []
  
