@@ -42,6 +42,12 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
       fec_order = FIRST
       submesh = coil_complement
   []
+  [SubmeshHDivFESpace]
+    type = MFEMVectorFESpace
+    fec_type = RT
+    fec_order = CONSTANT
+    submesh = coil_complement
+  []
 []
 
 [Variables]
@@ -54,7 +60,7 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
 [AuxVariables]
   [b_field]
     type = MFEMComplexVariable
-    fespace = HDivFESpace
+    fespace = SubmeshHDivFESpace
   []
   [source_a_field]
     type = MFEMComplexVariable
@@ -67,7 +73,6 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
 []
 
 [AuxKernels]
-  active = ''
   [curl]
     type = MFEMComplexCurlAux
     variable = b_field
