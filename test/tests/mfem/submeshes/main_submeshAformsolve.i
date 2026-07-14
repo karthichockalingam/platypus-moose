@@ -179,19 +179,19 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
 []
 
 [Transfers]
-  active = 'from_sub from_sub_source_a_field'
-  [from_sub]
-    type = MultiAppMFEMShapeEvaluationTransfer
-    source_variables = source_a_field
-    variables = coil_complement_source_a_field
-    from_multi_app = subapp
-  []
+  active = 'from_sub_source_a_field submesh_transfer_to_coil_complement'
   [from_sub_source_a_field]
     type = MultiAppMFEMShapeEvaluationTransfer
     source_variables = source_a_field
     variables = source_a_field
     from_multi_app = subapp
   []
+  [submesh_transfer_to_coil_complement]
+    type = MFEMComplexSubMeshTransfer
+    from_variable = source_a_field
+    to_variable = coil_complement_source_a_field
+    execute_on = INITIAL
+  []  
 []
 
 [Outputs]
