@@ -166,13 +166,23 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
 []
 
 
-[Solver]
+[Solvers]
   type = MFEMSuperLU
 []
 
 [Executioner]
   type = MFEMSteady
   device = cpu
+[]
+
+[VectorPostprocessors]
+  [line_sample]
+    type = MFEMComplexVariableLineValueSampler
+    variable = 'source_a_field'
+    start_point = '0 -55 0.5'
+    end_point = '0 55 0.5'
+    num_points = 10
+  []
 []
 
 [MultiApps]
