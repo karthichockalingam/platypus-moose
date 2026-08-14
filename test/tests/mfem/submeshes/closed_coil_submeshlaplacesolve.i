@@ -154,7 +154,9 @@ omega=${fparse 2.0*3.14159265358979323846*50.0}  # angular frequency 2*PI
 []
 
 [Solvers]
-  type = MFEMSuperLU
+  [superlu]
+    type = MFEMSuperLU
+  []
 []
 
 [Executioner]

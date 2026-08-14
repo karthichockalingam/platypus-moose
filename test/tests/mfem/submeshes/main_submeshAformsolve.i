@@ -167,7 +167,9 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
 
 
 [Solvers]
-  type = MFEMSuperLU
+  [superlu]
+    type = MFEMSuperLU
+  []
 []
 
 [Executioner]
@@ -179,8 +181,8 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
   [line_sample]
     type = MFEMComplexVariableLineValueSampler
     variable = 'source_a_field'
-    start_point = '0 -55 0.5'
-    end_point = '0 55 0.5'
+    start_point = '0.0 0.0 0.00685'
+    end_point = '0.0 0.11 0.00685'
     num_points = 10
   []
 []
