@@ -180,9 +180,9 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
 [VectorPostprocessors]
   [line_sample]
     type = MFEMComplexVariableLineValueSampler
-    variable = 'source_a_field'
-    start_point = '0.0 0.0 0.00685'
-    end_point = '0.0 0.11 0.00685'
+    variable = 'b_field'
+    start_point = '0.03 0.0 0.00685'
+    end_point = '0.03 0.11 0.00685'
     num_points = 10
   []
 []
@@ -223,5 +223,6 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
     vtk_format = ASCII
     submesh = coil_complement
   []
+    csv = true
 []
  
