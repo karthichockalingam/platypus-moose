@@ -1,6 +1,7 @@
 initial_coil_domains = 'First_half Second_half'
 coil_cut_surface = 'Cut'
-coil_loop_voltage = -80.00343387
+#coil_loop_voltage = -6400.549
+coil_loop_voltage = -1
 coil_conductivity = 1.0
 omega=${fparse 2.0*3.14159265358979323846*50.0}  # angular frequency 2*PI
 
@@ -112,6 +113,14 @@ omega=${fparse 2.0*3.14159265358979323846*50.0}  # angular frequency 2*PI
     type = MFEMVariable
     fespace = HCurlFESpace
   []
+  [total_e_field]
+    type = MFEMVariable
+    fespace = HCurlFESpace
+  []
+  [norm_total_e_field]
+    type = MFEMVariable
+    fespace = HCurlFESpace
+  []
 []
 
 [AuxKernels]
@@ -136,14 +145,26 @@ omega=${fparse 2.0*3.14159265358979323846*50.0}  # angular frequency 2*PI
     scale_factors = '${fparse 1.0/omega} ${fparse 1.0/omega}'
     execute_on = TIMESTEP_END
   []
+  [total_e_field]
+    type = MFEMSumAux
+    variable = total_e_field
+    source_variables = 'induced_e_field external_e_field'
+    execute_on = TIMESTEP_END
+  []
+  [norm_total_e_field]
+    type = MFEMNormalizedVectorCoefficientAux
+    variable = norm_total_e_field
+    vector_coefficient = total_e_field
+    execute_on = TIMESTEP_END
+  []
 []
 
 [Postprocessors]
   [CoilPower]
     type = MFEMVectorFEInnerProductIntegralPostprocessor
     coefficient = conductivity
-    dual_variable = external_e_field
-    primal_variable = external_e_field
+    dual_variable = norm_total_e_field
+    primal_variable = norm_total_e_field
     block = 'First_half Second_half'
   []
 []
