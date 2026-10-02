@@ -9,7 +9,7 @@ nu=795774.715 #  (meters/Henry) = 1/magentic permiablity of free space
 epsilon= 8.8541878176e-12 #Farads/m of free space
 
 [Mesh]
-  type = MFEMMesh
+  type = MFEMFileMesh
   file = ../mesh/team_coil_two_vols_plate_exterior_tet_m_offset_box.msh
 []
 

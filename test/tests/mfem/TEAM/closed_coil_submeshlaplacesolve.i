@@ -21,7 +21,7 @@ coil_loop_voltage = 1.0
 coil_conductivity = 1.0
 
 [Mesh]
-  type = MFEMMesh
+  type = MFEMFileMesh
   file = ../mesh/team_coil_two_vols_plate_exterior_tet_m_offset_box.msh
 []
 
