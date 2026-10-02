@@ -10,7 +10,7 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
 
 [Mesh]
   type = MFEMMesh
-  file = ../mesh/coarse_team_coil_two_vols_plate_exterior_tet_m_offset.msh
+  file = ../mesh/team_coil_two_vols_plate_exterior_tet_m_offset_box.msh
 []
 
 [Problem]
@@ -198,15 +198,15 @@ epsilon= 8.8541878176e-12 #Farads/m of free space
   device = cpu
 []
 
-# [VectorPostprocessors]
-#   [line_sample]
-#     type = MFEMComplexVariableLineValueSampler
-#     variable = 'b_field'
-#     start_point = '0.03 0.0 0.00685'
-#     end_point = '0.03 0.11 0.00685'
-#     num_points = 10
-#   []
-# []
+[VectorPostprocessors]
+   [line_sample]
+     type = MFEMComplexVariableLineValueSampler
+     variable = 'b_field'
+     start_point = '0.03 0.0 0.00685'
+     end_point = '0.03 0.11 0.00685'
+     num_points = 20
+   []
+ []
 
 [MultiApps]
   [subapp]
